@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   final Function(bool loggedIn) onLoginCallback;
-  LoginForm({Key? key, required this.onLoginCallback})
+  const LoginForm({Key? key, required this.onLoginCallback})
       : super(key: key);
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
+
   String? name;
+
   String? password;
 
   @override
@@ -62,7 +70,8 @@ class LoginForm extends StatelessWidget {
                     print(name);
                     print(password);
                     MyApp.of(context).authService.authenticated = true;
-                    onLoginCallback.call(true);
+                    MyApp.of(context).authService.username = name!;
+                    widget.onLoginCallback.call(true);
                   }
                 },
                 child: const Text('Submit'),
