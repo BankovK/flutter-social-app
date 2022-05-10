@@ -18,8 +18,9 @@ class NavPanel extends StatelessWidget {
       ),
       child: Column(children: const [
         NavItem(title: 'News', icon: Icons.newspaper, link: NewsListRoute()),
-        NavItem(title: 'Create Post', icon: Icons.group, link: PostFormRoute()),
-        NavItem(title: 'Friends', icon: Icons.group, link: ProfileListRoute())
+        NavItem(title: 'Create Post', icon: Icons.newspaper_outlined, link: PostFormRoute()),
+        NavItem(title: 'Friends', icon: Icons.emoji_people, link: ProfileListRoute()),
+        NavItem(title: 'Groups', icon: Icons.group, link: GroupsListRoute())
       ])
     );
   }

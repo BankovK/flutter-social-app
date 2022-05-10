@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_app/models/NewsPost.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/redux/actions.dart';
+import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter/material.dart';
@@ -23,12 +24,12 @@ class _PostFormState extends State<PostForm> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<List<NewsPost>, OnItemAddedCallback>(
+    return StoreConnector<AppState, OnItemAddedCallback>(
           converter: (store) {
             return (content) =>
                 store.dispatch(AddPostAction(
                     NewsPost(
-                        author: MyApp.of(context).authService.username,
+                        authorId: MyApp.of(context).authService.userId,
                         content: content,
                         dateTime: DateTime.now()
                     )

@@ -1,9 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_app/screens/group/groupsList.dart';
 import 'package:flutter_app/screens/loginForm.dart';
 import 'package:flutter_app/screens/post/postForm.dart';
 import 'package:flutter_app/screens/post/postsList.dart';
-import 'package:flutter_app/screens/profile.dart';
-import 'package:flutter_app/screens/profileList.dart';
+import 'package:flutter_app/screens/profile/profile.dart';
+import 'package:flutter_app/screens/profile/profileList.dart';
 import 'package:flutter_app/utils/route_guard.dart';
 
 @MaterialAutoRouter(
@@ -18,7 +19,7 @@ import 'package:flutter_app/utils/route_guard.dart';
     AutoRoute(
       page: ProfilePage,
       name: 'ProfilePageRoute',
-      path: '/details',
+      path: '/details/:id',
       guards: [RouteGuard],
     ),
     AutoRoute(
@@ -31,6 +32,12 @@ import 'package:flutter_app/utils/route_guard.dart';
       page: PostForm,
       name: 'PostFormRoute',
       path: '/create-post',
+      guards: [RouteGuard],
+    ),
+    AutoRoute(
+      page: GroupsList,
+      name: 'GroupsListRoute',
+      path: '/groups-list',
       guards: [RouteGuard],
     ),
     AutoRoute(page: LoginForm, name: 'LoginRoute', path: '/login')

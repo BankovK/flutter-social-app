@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
+import 'package:flutter_app/models/UserProfile.dart';
+import 'package:flutter_app/redux/reducers.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:collection/collection.dart';
 
 class LoginForm extends StatefulWidget {
   final Function(bool loggedIn) onLoginCallback;
@@ -67,11 +71,24 @@ class _LoginFormState extends State<LoginForm> {
                       const SnackBar(content: Text('Processing Data')),
                     );
                     _formKey.currentState!.save();
-                    print(name);
-                    print(password);
-                    MyApp.of(context).authService.authenticated = true;
-                    MyApp.of(context).authService.username = name!;
-                    widget.onLoginCallback.call(true);
+                    List<UserProfile> users = StoreProvider.of<AppState>(context).state.users;
+                    UserProfile? user = users.firstWhereOrNull((user) => user.name == name && user.password == password);
+                    if (user != null) {
+                      MyApp
+                          .of(context)
+                          .authService
+                          .authenticated = true;
+                      MyApp
+                          .of(context)
+                          .authService
+                          .userId = user.userId;
+                      widget.onLoginCallback.call(true);
+                    } else {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Incorrect Credentials!'), backgroundColor: Colors.red)
+                      );
+                    }
                   }
                 },
                 child: const Text('Submit'),

@@ -9,14 +9,20 @@ class NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isActive = ModalRoute.of(context)?.settings.name == link.routeName;
     return Padding(
       padding: const EdgeInsets.only(left: 30, top: 6),
       child: TextButton(
+        style: isActive
+            ? ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.grey)
+              )
+            : null,
         onPressed: () => AutoRouter.of(context).push(link),
         child: Row(children: [
-          Icon(icon),
+          Icon(icon, color: Colors.black),
           const SizedBox(height: 30),
-          Text(title)
+          Text(title, style: const TextStyle(color: Colors.black),)
         ]),
       ),
     );

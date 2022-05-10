@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/NewsPost.dart';
+import 'package:flutter_app/redux/reducers.dart';
+import 'package:flutter_app/routes/router.gr.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:flutter_app/routes/router.gr.dart';
 
 class PostItem extends StatelessWidget {
   final NewsPost item;
@@ -18,8 +20,8 @@ class PostItem extends StatelessWidget {
         children: [
           ListTile(
             title: InkWell(
-              onTap: () => AutoRouter.of(context).push(const ProfilePageRoute()),
-              child: Text(item.author),
+              onTap: () => AutoRouter.of(context).push(ProfilePageRoute(userId: item.authorId)),
+              child: Text(StoreProvider.of<AppState>(context).state.users.firstWhere((user) => user.userId == item.authorId).name),
             ),
             subtitle: Text(intl.DateFormat.yMEd().add_jms().format(item.dateTime)),
             leading: const CircleAvatar(
