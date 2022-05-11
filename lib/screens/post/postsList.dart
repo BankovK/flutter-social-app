@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/NewsPost.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/redux/reducers.dart';
@@ -11,6 +12,26 @@ class NewsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue[900],
+        centerTitle: true,
+        elevation: 0,
+        actions: [
+          IconButton(
+              onPressed: () {
+                MyApp
+                    .of(context)
+                    .authService
+                    .authenticated = false;
+                MyApp
+                    .of(context)
+                    .authService
+                    .userId = '';
+              },
+              icon: const Icon(Icons.exit_to_app)
+          )
+        ],
+      ),
       drawer: const NavPanel(),
       body: StoreConnector<AppState, List<NewsPost>>(
         converter: (store) => store.state.posts,

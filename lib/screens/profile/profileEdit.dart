@@ -4,6 +4,7 @@ import 'package:flutter_app/models/UserProfile.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
+import 'package:flutter_app/screens/profile/passwordEdit.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -112,6 +113,15 @@ class _ProfileEditState extends State<ProfileEdit> {
                           ),
                         ],
                       ),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => PasswordEditForm(userId: widget.profile.userId))
+                          );
+                        },
+                        child: const Text('Change password')
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

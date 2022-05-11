@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/UserProfile.dart';
 import 'package:flutter_app/redux/reducers.dart';
+import 'package:flutter_app/screens/registrationForm.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:collection/collection.dart';
 
@@ -32,6 +33,8 @@ class _LoginFormState extends State<LoginForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const Center(child: Text('Login', style: TextStyle(fontSize: 20))),
+              const SizedBox(height: 20,),
               TextFormField(
                 onSaved: (String? value) {
                   name = value;
@@ -64,6 +67,15 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               ),
               const SizedBox(height: 20,),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegistrationForm(onLoginCallback: widget.onLoginCallback))
+                    );
+                  },
+                  child: const Text('Register'),
+              ),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {

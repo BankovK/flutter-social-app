@@ -19,6 +19,15 @@ AppState appReducers(AppState previousState, dynamic action) {
   if (action is UpdateProfileAction) {
     return updateProfile(previousState, action);
   }
+  if (action is JoinGroupAction) {
+    return joinGroup(previousState, action);
+  }
+  if (action is RegisterUserAction) {
+    return registerUser(previousState, action);
+  }
+  if (action is ChangeUserPasswordAction) {
+    return changeUserPassword(previousState, action);
+  }
   return previousState;
 }
 
@@ -33,6 +42,35 @@ AppState addItem(AppState previousState, AddPostAction action) {
 AppState updateProfile(AppState previousState, UpdateProfileAction action) {
   final updatedIndex = previousState.users.indexWhere((user) => user.userId == action.profile.userId);
   previousState.users[updatedIndex] = action.profile;
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState joinGroup(AppState previousState, JoinGroupAction action) {
+  final updatedIndex = previousState.groups.indexWhere((group) => group.groupId == action.groupId);
+  previousState.groups[updatedIndex].members.add(action.userId);
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState registerUser(AppState previousState, RegisterUserAction action) {
+  previousState.users.add(action.profile);
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState changeUserPassword(AppState previousState, ChangeUserPasswordAction action) {
+  final updatedIndex = previousState.users.indexWhere((user) => user.userId == action.userId);
+  previousState.users[updatedIndex].password = action.password;
   return AppState(
       posts: previousState.posts,
       users: previousState.users,
