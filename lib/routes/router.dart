@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_app/screens/group/group.dart';
 import 'package:flutter_app/screens/group/groupsList.dart';
 import 'package:flutter_app/screens/loginForm.dart';
 import 'package:flutter_app/screens/post/postForm.dart';
@@ -38,6 +39,12 @@ import 'package:flutter_app/utils/route_guard.dart';
       page: GroupsList,
       name: 'GroupsListRoute',
       path: '/groups-list',
+      guards: [RouteGuard],
+    ),
+    AutoRoute(
+      page: GroupPage,
+      name: 'GroupPageRoute',
+      path: '/group/:id',
       guards: [RouteGuard],
     ),
     AutoRoute(page: LoginForm, name: 'LoginRoute', path: '/login')

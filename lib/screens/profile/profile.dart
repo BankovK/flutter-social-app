@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
-import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/screens/profile/profileEdit.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -48,7 +47,6 @@ class ProfilePage extends StatelessWidget {
             )
           ],
         ),
-        drawer: const NavPanel(),
         body: StoreConnector<AppState, UserProfile>(
           converter: (store) => store.state.users.firstWhere((user) => user.userId == userId),
           builder: (context, data) {

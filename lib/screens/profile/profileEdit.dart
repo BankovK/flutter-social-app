@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/UserProfile.dart';
-import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/screens/profile/passwordEdit.dart';
@@ -44,7 +44,26 @@ class _ProfileEditState extends State<ProfileEdit> {
         : '';
     return SafeArea(
       child: Scaffold(
-        drawer: const NavPanel(),
+        appBar: AppBar(
+          backgroundColor: Colors.blue[900],
+          centerTitle: true,
+          elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  MyApp
+                      .of(context)
+                      .authService
+                      .authenticated = false;
+                  MyApp
+                      .of(context)
+                      .authService
+                      .userId = '';
+                },
+                icon: const Icon(Icons.exit_to_app)
+            )
+          ],
+        ),
         body: StoreConnector<AppState, OnProfileUpdatedCallback>(
             converter: (store) {
               return () =>

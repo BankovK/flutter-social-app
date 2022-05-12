@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_app/models/NewsPost.dart';
-import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
@@ -11,7 +10,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import '../../main.dart';
 
 class PostForm extends StatefulWidget {
-  const PostForm({Key? key}) : super(key: key);
+  final String? groupId;
+  const PostForm({Key? key, this.groupId}) : super(key: key);
 
   @override
   _PostFormState createState() => _PostFormState();
@@ -30,13 +30,33 @@ class _PostFormState extends State<PostForm> {
                 store.dispatch(AddPostAction(
                     NewsPost(
                         authorId: MyApp.of(context).authService.userId,
+                        groupId: widget.groupId,
                         content: content,
                         dateTime: DateTime.now()
                     )
                 ));
           }, builder: (context, callback) {
             return Scaffold(
-              drawer: const NavPanel(),
+              appBar: AppBar(
+                backgroundColor: Colors.blue[900],
+                centerTitle: true,
+                elevation: 0,
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        MyApp
+                            .of(context)
+                            .authService
+                            .authenticated = false;
+                        MyApp
+                            .of(context)
+                            .authService
+                            .userId = '';
+                      },
+                      icon: const Icon(Icons.exit_to_app)
+                  )
+                ],
+              ),
               body: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
