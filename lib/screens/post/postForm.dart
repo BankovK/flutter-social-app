@@ -77,7 +77,7 @@ class _PostFormState extends State<PostForm> {
                               const SnackBar(content: Text('Processing Data')),
                             );
                             callback(jsonEncode(_controller.document.toDelta().toJson()));
-                            AutoRouter.of(context).push(const NewsListRoute());
+                            Navigator.pop(context);
                           }
                         },
                         child: const Text('Submit')

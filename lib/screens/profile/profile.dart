@@ -1,12 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
+import 'package:flutter_app/models/NewsPost.dart';
 import 'package:flutter_app/redux/reducers.dart';
+import 'package:flutter_app/screens/post/postItem.dart';
 import 'package:flutter_app/screens/profile/profileEdit.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart' as intl;
 
 import '../../models/UserProfile.dart';
+import '../post/postForm.dart';
 
 class ProfilePage extends StatelessWidget {
   String userId;
@@ -94,7 +97,40 @@ class ProfilePage extends StatelessWidget {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileEdit(profile: data)));
                       },
                       icon: const Icon(Icons.edit)
-                  )
+                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Posts:', style: TextStyle(fontSize: 20)),
+                    if(userId == MyApp.of(context).authService.userId)
+                      IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const PostForm())
+                            );
+                          },
+                          icon: const Icon(Icons.plus_one, color: Colors.blue)
+                      ),
+                  ],
+                ),
+                Flexible(
+                  child: StoreConnector<AppState, List<NewsPost>>(
+                      converter: (store) => store.state.posts.where((element) => element.authorId == userId && element.groupId == null).toList(),
+                      builder: (context, list) {
+                        return ListView.builder(
+                          itemCount: list.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
+                                child: PostItem(item: list[index])
+                            );
+                          },
+                        );
+                      }
+                  ),
+                )
               ],
             );
           }

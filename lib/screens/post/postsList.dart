@@ -34,7 +34,7 @@ class NewsList extends StatelessWidget {
       ),
       drawer: const NavPanel(),
       body: StoreConnector<AppState, List<NewsPost>>(
-        converter: (store) => store.state.posts,
+        converter: (store) => store.state.posts.where((element) => element.authorId != MyApp.of(context).authService.userId).toList(),
         builder: (context, list) {
           return ListView.builder(
             itemCount: list.length,
