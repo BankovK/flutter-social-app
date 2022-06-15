@@ -28,6 +28,15 @@ AppState appReducers(AppState previousState, dynamic action) {
   if (action is ChangeUserPasswordAction) {
     return changeUserPassword(previousState, action);
   }
+  if (action is AddFriendAction) {
+    return addFriend(previousState, action);
+  }
+  if (action is RequestFriendshipAction) {
+    return requestFriendship(previousState, action);
+  }
+  if (action is DenyFriendshipAction) {
+    return denyFriendship(previousState, action);
+  }
   return previousState;
 }
 
@@ -71,6 +80,39 @@ AppState registerUser(AppState previousState, RegisterUserAction action) {
 AppState changeUserPassword(AppState previousState, ChangeUserPasswordAction action) {
   final updatedIndex = previousState.users.indexWhere((user) => user.userId == action.userId);
   previousState.users[updatedIndex].password = action.password;
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState addFriend(AppState previousState, AddFriendAction action) {
+  final updatedIndex = previousState.users.indexWhere((user) => user.userId == action.toUserId);
+  previousState.users[updatedIndex].friends.add(action.friendUserId);
+  final updatedIndex2 = previousState.users.indexWhere((user) => user.userId == action.friendUserId);
+  previousState.users[updatedIndex2].friends.add(action.toUserId);
+  previousState.users[updatedIndex].friendshipRequests.remove(action.friendUserId);
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState requestFriendship(AppState previousState, RequestFriendshipAction action) {
+  final updatedIndex = previousState.users.indexWhere((user) => user.userId == action.toUserId);
+  previousState.users[updatedIndex].friendshipRequests.add(action.fromUserId);
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState denyFriendship(AppState previousState, DenyFriendshipAction action) {
+  final updatedIndex = previousState.users.indexWhere((user) => user.userId == action.toUserId);
+  previousState.users[updatedIndex].friendshipRequests.remove(action.friendUserId);
   return AppState(
       posts: previousState.posts,
       users: previousState.users,

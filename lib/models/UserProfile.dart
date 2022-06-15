@@ -5,6 +5,8 @@ class UserProfile {
   DateTime? dateOfBirth;
   String? location;
   String? phoneNumber;
+  List<String> friends = [];
+  List<String> friendshipRequests = [];
 
   UserProfile({
     required this.userId,
@@ -12,7 +14,7 @@ class UserProfile {
     required this.password,
     this.dateOfBirth,
     this.location,
-    this.phoneNumber
+    this.phoneNumber,
   });
 
 }

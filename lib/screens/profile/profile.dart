@@ -9,6 +9,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart' as intl;
 
 import '../../models/UserProfile.dart';
+import '../../redux/actions.dart';
 import '../post/postForm.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -98,6 +99,49 @@ class ProfilePage extends StatelessWidget {
                       },
                       icon: const Icon(Icons.edit)
                   ),
+                if (userId == MyApp.of(context).authService.userId && data.friendshipRequests.isNotEmpty) ... [
+                  Text(
+                    'Friendship requests: ${data.friendshipRequests.length}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 3
+                    ),
+                  ),
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount: data.friendshipRequests.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                            child: ListTile(
+                              title: Row(
+                                children: [
+                                  Text(StoreProvider.of<AppState>(context).state.users.firstWhere((element) => data.friendshipRequests[index].contains(element.userId)).name),
+                                  IconButton(
+                                      onPressed: () {
+                                        StoreProvider.of<AppState>(context).dispatch(AddFriendAction(
+                                            toUserId: data.userId,
+                                            friendUserId: data.friendshipRequests[index]
+                                        ));
+                                      },
+                                      icon: const Icon(Icons.done, color: Colors.green,)
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        StoreProvider.of<AppState>(context).dispatch(DenyFriendshipAction(
+                                            toUserId: data.userId,
+                                            friendUserId: data.friendshipRequests[index]
+                                        ));
+                                      },
+                                      icon: const Icon(Icons.remove, color: Colors.red,)
+                                  ),
+                                ],
+                              ),
+                            )
+                        );
+                      },
+                    ),
+                  ),
+                ],
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,

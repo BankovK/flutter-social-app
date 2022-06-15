@@ -32,3 +32,24 @@ class ChangeUserPasswordAction {
 
   ChangeUserPasswordAction({required this.userId, required this.password});
 }
+
+class AddFriendAction {
+  final String friendUserId;
+  final String toUserId;
+
+  AddFriendAction({required this.friendUserId, required this.toUserId});
+}
+
+class DenyFriendshipAction {
+  final String friendUserId;
+  final String toUserId;
+
+  DenyFriendshipAction({required this.friendUserId, required this.toUserId});
+}
+
+class RequestFriendshipAction {
+  final String fromUserId;
+  final String toUserId;
+
+  RequestFriendshipAction({required this.fromUserId, required this.toUserId});
+}
