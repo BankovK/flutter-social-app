@@ -53,3 +53,17 @@ class RequestFriendshipAction {
 
   RequestFriendshipAction({required this.fromUserId, required this.toUserId});
 }
+
+class MakeAdminAction {
+  final String groupId;
+  final String userId;
+
+  MakeAdminAction({required this.groupId, required this.userId});
+}
+
+class BanFromGroupAction {
+  final String groupId;
+  final String userId;
+
+  BanFromGroupAction({required this.groupId, required this.userId});
+}

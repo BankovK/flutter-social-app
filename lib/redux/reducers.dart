@@ -37,6 +37,12 @@ AppState appReducers(AppState previousState, dynamic action) {
   if (action is DenyFriendshipAction) {
     return denyFriendship(previousState, action);
   }
+  if (action is MakeAdminAction) {
+    return makeAdmin(previousState, action);
+  }
+  if (action is BanFromGroupAction) {
+    return banFromGroup(previousState, action);
+  }
   return previousState;
 }
 
@@ -113,6 +119,28 @@ AppState requestFriendship(AppState previousState, RequestFriendshipAction actio
 AppState denyFriendship(AppState previousState, DenyFriendshipAction action) {
   final updatedIndex = previousState.users.indexWhere((user) => user.userId == action.toUserId);
   previousState.users[updatedIndex].friendshipRequests.remove(action.friendUserId);
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState makeAdmin(AppState previousState, MakeAdminAction action) {
+  final updatedIndex = previousState.groups.indexWhere((group) => group.groupId == action.groupId);
+  previousState.groups[updatedIndex].admins.add(action.userId);
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState banFromGroup(AppState previousState, BanFromGroupAction action) {
+  final updatedIndex = previousState.groups.indexWhere((group) => group.groupId == action.groupId);
+  previousState.groups[updatedIndex].admins.remove(action.userId);
+  previousState.groups[updatedIndex].members.remove(action.userId);
+  previousState.groups[updatedIndex].banned.add(action.userId);
   return AppState(
       posts: previousState.posts,
       users: previousState.users,

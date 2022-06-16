@@ -100,45 +100,46 @@ class ProfilePage extends StatelessWidget {
                       icon: const Icon(Icons.edit)
                   ),
                 if (userId == MyApp.of(context).authService.userId && data.friendshipRequests.isNotEmpty) ... [
-                  Text(
-                    'Friendship requests: ${data.friendshipRequests.length}',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 3
-                    ),
-                  ),
                   Flexible(
-                    child: ListView.builder(
-                      itemCount: data.friendshipRequests.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                            child: ListTile(
-                              title: Row(
-                                children: [
-                                  Text(StoreProvider.of<AppState>(context).state.users.firstWhere((element) => data.friendshipRequests[index].contains(element.userId)).name),
-                                  IconButton(
+                    child: ExpansionTile(
+                      title: Text(
+                        'Friendship requests: ${data.friendshipRequests.length}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 3
+                        ),
+                      ),
+                      children: <Widget>[
+                          ...data.friendshipRequests.map((String friendId) =>
+                            Card(
+                              child: ListTile(
+                                title: Row(
+                                  children: [
+                                    Text(StoreProvider.of<AppState>(context).state.users.firstWhere((element) => friendId == element.userId).name),
+                                    IconButton(
                                       onPressed: () {
                                         StoreProvider.of<AppState>(context).dispatch(AddFriendAction(
-                                            toUserId: data.userId,
-                                            friendUserId: data.friendshipRequests[index]
+                                          toUserId: data.userId,
+                                          friendUserId: friendId
                                         ));
                                       },
                                       icon: const Icon(Icons.done, color: Colors.green,)
-                                  ),
-                                  IconButton(
+                                    ),
+                                    IconButton(
                                       onPressed: () {
                                         StoreProvider.of<AppState>(context).dispatch(DenyFriendshipAction(
-                                            toUserId: data.userId,
-                                            friendUserId: data.friendshipRequests[index]
+                                          toUserId: data.userId,
+                                          friendUserId: friendId
                                         ));
                                       },
                                       icon: const Icon(Icons.remove, color: Colors.red,)
-                                  ),
-                                ],
-                              ),
+                                    ),
+                                  ],
+                                ),
+                              )
                             )
-                        );
-                      },
+                          )
+                      ],
                     ),
                   ),
                 ],

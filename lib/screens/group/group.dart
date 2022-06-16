@@ -2,6 +2,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
+import 'package:flutter_app/models/Group.dart';
 import 'package:flutter_app/models/NewsPost.dart';
 import 'package:flutter_app/models/UserProfile.dart';
 import 'package:flutter_app/redux/reducers.dart';
@@ -10,14 +11,23 @@ import 'package:flutter_app/screens/post/postForm.dart';
 import 'package:flutter_app/screens/post/postItem.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-class GroupPage extends StatelessWidget {
+import '../../redux/actions.dart';
+
+class GroupPage extends StatefulWidget {
   String groupId;
   GroupPage({Key? key, @PathParam('id') required this.groupId}) : super(key: key);
 
   @override
+  State<GroupPage> createState() => _GroupPageState();
+}
+
+class _GroupPageState extends State<GroupPage> {
+  @override
   Widget build(BuildContext context) {
+    Group group = StoreProvider.of<AppState>(context).state.groups
+        .firstWhere((element) => element.groupId == widget.groupId);
     List<UserProfile> members = StoreProvider.of<AppState>(context).state.users
-        .where((element) => StoreProvider.of<AppState>(context).state.groups.firstWhere((element) => element.groupId == groupId).members.contains(element.userId)).toList();
+        .where((element) => group.members.contains(element.userId)).toList();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[900],
@@ -46,10 +56,47 @@ class GroupPage extends StatelessWidget {
             children: <Widget>[
               ...members.map((UserProfile profile) {
                 return ListTile(
-                  onTap: () {
-                    context.router.push(ProfilePageRoute(userId: profile.userId));
-                  },
-                  title: Text(profile.name),
+                  title: Row(
+                    children: [
+                      InkWell(
+                        child: Text(profile.name),
+                        onTap: () {
+                          context.router.push(ProfilePageRoute(userId: profile.userId));
+                        },
+                      ),
+                      if (MyApp.of(context).authService.userId != profile.userId && group.admins.contains(MyApp.of(context).authService.userId)) ... [
+                        if (!group.admins.contains(profile.userId))
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                StoreProvider.of<AppState>(context).dispatch(
+                                    MakeAdminAction(
+                                      groupId: widget.groupId,
+                                      userId: profile.userId,
+                                    )
+                                );
+                              });
+                            },
+                            child: const Text('Make admin'),
+                          ),
+                        if (!group.banned.contains(profile.userId)) ... [
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                StoreProvider.of<AppState>(context).dispatch(
+                                    BanFromGroupAction(
+                                      groupId: widget.groupId,
+                                      userId: profile.userId,
+                                    )
+                                );
+                              });
+                            },
+                            child: const Text('Ban'),
+                          )
+                        ]
+                      ]
+                    ],
+                  ),
                   leading: const CircleAvatar(
                     backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
                   ),
@@ -61,14 +108,14 @@ class GroupPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PostForm(groupId: groupId))
+                    MaterialPageRoute(builder: (context) => PostForm(groupId: widget.groupId))
                 );
               },
               child: const Text('Add post')
           ),
           Flexible(
             child: StoreConnector<AppState, List<NewsPost>>(
-                converter: (store) => store.state.posts.where((element) => element.groupId == groupId).toList(),
+                converter: (store) => store.state.posts.where((element) => element.groupId == widget.groupId).toList(),
                 builder: (context, list) {
                   return ListView.builder(
                     itemCount: list.length,

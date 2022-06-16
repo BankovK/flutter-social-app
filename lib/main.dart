@@ -23,9 +23,9 @@ void main() {
       ],
       posts: [],
       groups: [
-        Group(groupId: '1', name: 'Group1', members: ['1']),
-        Group(groupId: '2', name: 'Group2', members: []),
-        Group(groupId: '3', name: 'Group12', members: []),
+        Group(groupId: '1', name: 'Group1', admins: ['1'], members: ['1']),
+        Group(groupId: '2', name: 'Group2', admins: ['3'], members: ['2', '3']),
+        Group(groupId: '3', name: 'Group12', admins: ['1'], members: ['1', '2', '3']),
       ]
     )
   );

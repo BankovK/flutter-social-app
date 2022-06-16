@@ -21,7 +21,7 @@ class NavPanel extends StatelessWidget {
       child: Column(children: [
         NavItem(title: 'My Page', icon: Icons.home_rounded, link: ProfilePageRoute(userId: MyApp.of(context).authService.userId)),
         const NavItem(title: 'News', icon: Icons.newspaper, link: NewsListRoute()),
-        const NavItem(title: 'Friends', icon: Icons.emoji_people, link: ProfileListRoute()),
+        const NavItem(title: 'Profiles', icon: Icons.emoji_people, link: ProfileListRoute()),
         const NavItem(title: 'Groups', icon: Icons.group, link: GroupsListRoute())
       ])
     );

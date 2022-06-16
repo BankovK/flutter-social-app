@@ -136,12 +136,14 @@ class _GroupsListState extends State<GroupsList> {
                                               },
                                             ),
                                             if (!groupInteract.list[index].members.contains(MyApp.of(context).authService.userId))
-                                              TextButton(
-                                                onPressed: () {
-                                                  groupInteract.joinCallback(groupInteract.list[index].groupId);
-                                                },
-                                                child: const Text('Join'),
-                                              )
+                                              !groupInteract.list[index].banned.contains(MyApp.of(context).authService.userId)
+                                              ? TextButton(
+                                                  onPressed: () {
+                                                    groupInteract.joinCallback(groupInteract.list[index].groupId);
+                                                  },
+                                                  child: const Text('Join'),
+                                                )
+                                              : const Text('Banned', style: TextStyle(color: Colors.red),)
                                           ],
                                         ),
                                         subtitle: Text('${groupInteract.list[index].members.length} members'),
