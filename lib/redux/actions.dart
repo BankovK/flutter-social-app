@@ -67,3 +67,17 @@ class BanFromGroupAction {
 
   BanFromGroupAction({required this.groupId, required this.userId});
 }
+
+class LikePostAction {
+  final int postId;
+  final String userId;
+
+  LikePostAction({required this.postId, required this.userId});
+}
+
+class RemoveLikeFromPostAction {
+  final int postId;
+  final String userId;
+
+  RemoveLikeFromPostAction({required this.postId, required this.userId});
+}

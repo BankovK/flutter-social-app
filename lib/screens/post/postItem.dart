@@ -3,15 +3,50 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/NewsPost.dart';
+import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 
+import '../../main.dart';
+
 class PostItem extends StatelessWidget {
   final NewsPost item;
   const PostItem({Key? key, required this.item}) : super(key: key);
+
+  Widget createLikeBtn(context) {
+    return !item.likedBy.contains(MyApp.of(context).authService.userId)
+        ? IconButton(
+            onPressed: () {
+              StoreProvider.of<AppState>(context).dispatch(
+                  LikePostAction(
+                    postId: item.postId,
+                    userId: MyApp
+                        .of(context)
+                        .authService
+                        .userId,
+                  )
+              );
+            },
+            icon: const Icon(Icons.heart_broken_outlined)
+          )
+        : IconButton(
+            onPressed: () {
+              StoreProvider.of<AppState>(context).dispatch(
+                  RemoveLikeFromPostAction(
+                    postId: item.postId,
+                    userId: MyApp
+                        .of(context)
+                        .authService
+                        .userId,
+                  )
+              );
+            },
+            icon: const Icon(Icons.heart_broken_rounded)
+          );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +80,13 @@ class PostItem extends StatelessWidget {
                   readOnly: true
               )
           ),
+          if (item.authorId != MyApp.of(context).authService.userId)
+            Row(
+              children: [
+                createLikeBtn(context),
+                Text('${item.likedBy.length}')
+              ]
+            )
         ],
       ),
     );

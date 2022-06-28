@@ -43,6 +43,12 @@ AppState appReducers(AppState previousState, dynamic action) {
   if (action is BanFromGroupAction) {
     return banFromGroup(previousState, action);
   }
+  if (action is LikePostAction) {
+    return likePost(previousState, action);
+  }
+  if (action is RemoveLikeFromPostAction) {
+    return removeLikeFromPost(previousState, action);
+  }
   return previousState;
 }
 
@@ -141,6 +147,26 @@ AppState banFromGroup(AppState previousState, BanFromGroupAction action) {
   previousState.groups[updatedIndex].admins.remove(action.userId);
   previousState.groups[updatedIndex].members.remove(action.userId);
   previousState.groups[updatedIndex].banned.add(action.userId);
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState likePost(AppState previousState, LikePostAction action) {
+  final updatedIndex = previousState.posts.indexWhere((post) => post.postId == action.postId);
+  previousState.posts[updatedIndex].likedBy.add(action.userId);
+  return AppState(
+      posts: previousState.posts,
+      users: previousState.users,
+      groups: previousState.groups
+  );
+}
+
+AppState removeLikeFromPost(AppState previousState, RemoveLikeFromPostAction action) {
+  final updatedIndex = previousState.posts.indexWhere((post) => post.postId == action.postId);
+  previousState.posts[updatedIndex].likedBy.remove(action.userId);
   return AppState(
       posts: previousState.posts,
       users: previousState.users,

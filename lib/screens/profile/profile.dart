@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
+import 'package:flutter_app/models/Group.dart';
 import 'package:flutter_app/models/NewsPost.dart';
 import 'package:flutter_app/redux/reducers.dart';
+import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_app/screens/post/postItem.dart';
 import 'package:flutter_app/screens/profile/profileEdit.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -29,6 +31,8 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Group> groups = StoreProvider.of<AppState>(context).state.groups
+        .where((element) => element.members.contains(userId)).toList();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -99,6 +103,32 @@ class ProfilePage extends StatelessWidget {
                       },
                       icon: const Icon(Icons.edit)
                   ),
+                if (groups.isNotEmpty) ... [
+                  Flexible(
+                    child: ExpansionTile(
+                      title: Text('Member in ${groups.length} groups:'),
+                      children: <Widget>[
+                        ...groups.map((Group group) {
+                          return ListTile(
+                            title: Row(
+                              children: [
+                                InkWell(
+                                  child: Text(group.name),
+                                  onTap: () {
+                                    context.router.push(GroupPageRoute(groupId: group.groupId));
+                                  },
+                                ),
+                              ],
+                            ),
+                            leading: const CircleAvatar(
+                              backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
+                            ),
+                          );
+                        })
+                      ],
+                    ),
+                  )
+                ],
                 if (userId == MyApp.of(context).authService.userId && data.friendshipRequests.isNotEmpty) ... [
                   Flexible(
                     child: ExpansionTile(

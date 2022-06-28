@@ -29,6 +29,7 @@ class _PostFormState extends State<PostForm> {
             return (content) =>
                 store.dispatch(AddPostAction(
                     NewsPost(
+                        postId: store.state.posts.length + 1,
                         authorId: MyApp.of(context).authService.userId,
                         groupId: widget.groupId,
                         content: content,
