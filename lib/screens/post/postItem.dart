@@ -71,7 +71,7 @@ class PostItem extends StatelessWidget {
                 : null,
           ),
           Padding(
-              padding: EdgeInsets.all(18),
+              padding: const EdgeInsets.all(18),
               child: quill.QuillEditor.basic(
                   controller: quill.QuillController(
                       document: quill.Document.fromJson(jsonDecode(item.content)),

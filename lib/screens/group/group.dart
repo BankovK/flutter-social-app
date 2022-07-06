@@ -104,7 +104,7 @@ class _GroupPageState extends State<GroupPage> {
               })
             ],
           ),
-          TextButton(
+          if (group.members.contains(MyApp.of(context).authService.userId)) TextButton(
               onPressed: () {
                 Navigator.push(
                     context,

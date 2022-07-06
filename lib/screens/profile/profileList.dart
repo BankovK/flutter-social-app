@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/UserProfile.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
+import 'package:flutter_app/navpanel/notificationIcon.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
@@ -27,6 +28,7 @@ class _ProfileListState extends State<ProfileList> {
           centerTitle: true,
           elevation: 0,
           actions: [
+            const NotificationIcon(),
             IconButton(
                 onPressed: () {
                   MyApp
@@ -39,7 +41,7 @@ class _ProfileListState extends State<ProfileList> {
                       .userId = '';
                 },
                 icon: const Icon(Icons.exit_to_app)
-            )
+            ),
           ],
         ),
         drawer: const NavPanel(),
@@ -78,7 +80,7 @@ class _ProfileListState extends State<ProfileList> {
                             ? store.state.users.where((element) =>
                                 element.userId != MyApp.of(context).authService.userId
                                 && element.friends.contains(MyApp.of(context).authService.userId)
-                                && element.name.toLowerCase().contains(searchText!)
+                                && element.name.toLowerCase().contains(searchText!.toLowerCase())
                               ).toList()
                             : store.state.users.where((element) =>
                                 element.userId != MyApp.of(context).authService.userId
@@ -93,7 +95,7 @@ class _ProfileListState extends State<ProfileList> {
                                 child: Card(
                                   child: ListTile(
                                     onTap: () {
-                                      context.router.push(ProfilePageRoute(userId: list[index].userId));
+                                        context.router.push(ProfilePageRoute(userId: list[index].userId));
                                     },
                                     title: Text(list[index].name),
                                     leading: const CircleAvatar(
@@ -112,7 +114,7 @@ class _ProfileListState extends State<ProfileList> {
                               list: searchText != ''
                                 ? store.state.users.where((element) =>
                                     element.userId != MyApp.of(context).authService.userId
-                                    && element.name.toLowerCase().contains(searchText!)
+                                    && element.name.toLowerCase().contains(searchText!.toLowerCase())
                                   ).toList()
                                 : store.state.users.where((element) =>
                                     element.userId != MyApp.of(context).authService.userId

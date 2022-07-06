@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/Group.dart';
 import 'package:flutter_app/models/NewsPost.dart';
+import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_app/screens/post/postItem.dart';
+import 'package:flutter_app/screens/profile/friendshipRequestCard.dart';
 import 'package:flutter_app/screens/profile/profileEdit.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart' as intl;
 
 import '../../models/UserProfile.dart';
-import '../../redux/actions.dart';
 import '../post/postForm.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -31,6 +32,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String currentUserId = MyApp.of(context).authService.userId;
     List<Group> groups = StoreProvider.of<AppState>(context).state.groups
         .where((element) => element.members.contains(userId)).toList();
     return SafeArea(
@@ -55,11 +57,56 @@ class ProfilePage extends StatelessWidget {
             )
           ],
         ),
-        body: StoreConnector<AppState, UserProfile>(
-          converter: (store) => store.state.users.firstWhere((user) => user.userId == userId),
-          builder: (context, data) {
+        body: StoreConnector<AppState, UserProfileData>(
+          converter: (store) => UserProfileData(
+            data: store.state.users.firstWhere((user) => user.userId == userId),
+            isPotentialFriend: store.state.users.firstWhere((user) => user.userId == currentUserId).friendshipRequests.contains(userId)
+          ),
+          builder: (context, userProfileData) {
             return Column(
               children: [
+                if (userProfileData.isPotentialFriend) Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    children: [
+                      const Text('Accept friendship?'),
+                      IconButton(
+                          onPressed: () {
+                            StoreProvider.of<AppState>(context).dispatch(AddFriendAction(
+                                toUserId: currentUserId,
+                                friendUserId: userId
+                            ));
+                          },
+                          icon: const Icon(Icons.done, color: Colors.green,)
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            StoreProvider.of<AppState>(context).dispatch(DenyFriendshipAction(
+                                toUserId: currentUserId,
+                                friendUserId: userId
+                            ));
+                          },
+                          icon: const Icon(Icons.remove, color: Colors.red,)
+                      ),
+                    ],
+                  ),
+                ),
+                if (userId == currentUserId && userProfileData.data.friendshipRequests.isNotEmpty) ... [
+                  ExpansionTile(
+                    title: Text(
+                      'Friendship requests: ${userProfileData.data.friendshipRequests.length}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 3
+                      ),
+                    ),
+                    children: <Widget>[
+                      ...userProfileData.data.friendshipRequests.map((String friendId) =>
+                          FriendshipRequestCard(userId: userProfileData.data.userId, friendId: friendId, )
+                      )
+                    ],
+                  ),
+                ],
                 Row(
                   children: [
                     Expanded(
@@ -74,21 +121,21 @@ class ProfilePage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             createLabel('Name:'),
-                            Text(data.name),
+                            Text(userProfileData.data.name),
                             const SizedBox(height: 10),
-                            if (data.dateOfBirth != null) ... [
+                            if (userProfileData.data.dateOfBirth != null) ... [
                               createLabel('Date of birth:'),
-                              Text(intl.DateFormat.yMd().format(data.dateOfBirth!)),
+                              Text(intl.DateFormat.yMd().format(userProfileData.data.dateOfBirth!)),
                               const SizedBox(height: 10),
                             ],
-                            if (data.location != null) ... [
+                            if (userProfileData.data.location != null) ... [
                               createLabel('Location:'),
-                              Text(data.location!),
+                              Text(userProfileData.data.location!),
                               const SizedBox(height: 10),
                             ],
-                            if (data.phoneNumber != null) ... [
+                            if (userProfileData.data.phoneNumber != null) ... [
                               createLabel('Phone:'),
-                              Text(data.phoneNumber!),
+                              Text(userProfileData.data.phoneNumber!),
                             ]
                           ],
                         ),
@@ -96,81 +143,35 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (data.userId == MyApp.of(context).authService.userId)
+                if (userProfileData.data.userId == currentUserId)
                   IconButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileEdit(profile: data)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileEdit(profile: userProfileData.data)));
                       },
                       icon: const Icon(Icons.edit)
                   ),
                 if (groups.isNotEmpty) ... [
-                  Flexible(
-                    child: ExpansionTile(
-                      title: Text('Member in ${groups.length} groups:'),
-                      children: <Widget>[
-                        ...groups.map((Group group) {
-                          return ListTile(
-                            title: Row(
-                              children: [
-                                InkWell(
-                                  child: Text(group.name),
-                                  onTap: () {
-                                    context.router.push(GroupPageRoute(groupId: group.groupId));
-                                  },
-                                ),
-                              ],
-                            ),
-                            leading: const CircleAvatar(
-                              backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
-                            ),
-                          );
-                        })
-                      ],
-                    ),
-                  )
-                ],
-                if (userId == MyApp.of(context).authService.userId && data.friendshipRequests.isNotEmpty) ... [
-                  Flexible(
-                    child: ExpansionTile(
-                      title: Text(
-                        'Friendship requests: ${data.friendshipRequests.length}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 3
-                        ),
-                      ),
-                      children: <Widget>[
-                          ...data.friendshipRequests.map((String friendId) =>
-                            Card(
-                              child: ListTile(
-                                title: Row(
-                                  children: [
-                                    Text(StoreProvider.of<AppState>(context).state.users.firstWhere((element) => friendId == element.userId).name),
-                                    IconButton(
-                                      onPressed: () {
-                                        StoreProvider.of<AppState>(context).dispatch(AddFriendAction(
-                                          toUserId: data.userId,
-                                          friendUserId: friendId
-                                        ));
-                                      },
-                                      icon: const Icon(Icons.done, color: Colors.green,)
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        StoreProvider.of<AppState>(context).dispatch(DenyFriendshipAction(
-                                          toUserId: data.userId,
-                                          friendUserId: friendId
-                                        ));
-                                      },
-                                      icon: const Icon(Icons.remove, color: Colors.red,)
-                                    ),
-                                  ],
-                                ),
-                              )
-                            )
-                          )
-                      ],
-                    ),
+                  ExpansionTile(
+                    title: Text('Member in ${groups.length} groups:'),
+                    children: <Widget>[
+                      ...groups.map((Group group) {
+                        return ListTile(
+                          title: Row(
+                            children: [
+                              InkWell(
+                                child: Text(group.name),
+                                onTap: () {
+                                  context.router.push(GroupPageRoute(groupId: group.groupId));
+                                },
+                              ),
+                            ],
+                          ),
+                          leading: const CircleAvatar(
+                            backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
+                          ),
+                        );
+                      })
+                    ],
                   ),
                 ],
                 Row(
@@ -178,7 +179,7 @@ class ProfilePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text('Posts:', style: TextStyle(fontSize: 20)),
-                    if(userId == MyApp.of(context).authService.userId)
+                    if(userId == currentUserId)
                       IconButton(
                           onPressed: () {
                             Navigator.push(
@@ -213,4 +214,11 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+}
+
+class UserProfileData {
+  UserProfile data;
+  bool isPotentialFriend;
+
+  UserProfileData({required this.data, required this.isPotentialFriend});
 }

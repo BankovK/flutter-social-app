@@ -38,7 +38,7 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Center(child: Text('Register', style: TextStyle(fontSize: 20))),
+                  const Center(child: Text('Change password', style: TextStyle(fontSize: 20))),
                   const SizedBox(height: 20,),
                   TextFormField(
                     onSaved: (String? value) {
@@ -57,6 +57,7 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                   ),
                   const SizedBox(height: 20,),
                   TextFormField(
+                    obscureText: true,
                     onSaved: (String? value) {
                       password = value;
                     },
@@ -73,6 +74,7 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                   ),
                   const SizedBox(height: 20,),
                   TextFormField(
+                    obscureText: true,
                     onSaved: (String? value) {
                       passwordCheck = value;
                     },
@@ -117,7 +119,7 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                         Navigator.pop(context);
                       }
                     },
-                    child: const Text('Register'),
+                    child: const Text('Submit'),
                   ),
                 ],
               ),

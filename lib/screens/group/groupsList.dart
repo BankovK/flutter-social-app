@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/Group.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
+import 'package:flutter_app/navpanel/notificationIcon.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -27,6 +28,7 @@ class _GroupsListState extends State<GroupsList> {
           centerTitle: true,
           elevation: 0,
           actions: [
+            const NotificationIcon(),
             IconButton(
                 onPressed: () {
                   MyApp
@@ -77,7 +79,7 @@ class _GroupsListState extends State<GroupsList> {
                           converter: (store) => searchText != ''
                               ? store.state.groups.where((element) =>
                                   element.members.contains(MyApp.of(context).authService.userId)
-                                  && element.name.toLowerCase().contains(searchText!)
+                                  && element.name.toLowerCase().contains(searchText!.toLowerCase())
                                 ).toList()
                               : store.state.groups.where((element) =>
                                   element.members.contains(MyApp.of(context).authService.userId)
@@ -110,7 +112,7 @@ class _GroupsListState extends State<GroupsList> {
                       StoreConnector<AppState, GroupInteract>(
                           converter: (store) => GroupInteract(
                               list: searchText != ''
-                                ? store.state.groups.where((element) => element.name.toLowerCase().contains(searchText!)).toList()
+                                ? store.state.groups.where((element) => element.name.toLowerCase().contains(searchText!.toLowerCase())).toList()
                                 : store.state.groups,
                               joinCallback: (String groupId) {
                                 store.dispatch(JoinGroupAction(
