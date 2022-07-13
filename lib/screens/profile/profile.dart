@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/Group.dart';
 import 'package:flutter_app/models/NewsPost.dart';
+import 'package:flutter_app/navpanel/localeMenu.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_app/screens/profile/friendshipRequestCard.dart';
 import 'package:flutter_app/screens/profile/profileEdit.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/UserProfile.dart';
 import '../post/postForm.dart';
@@ -42,6 +44,7 @@ class ProfilePage extends StatelessWidget {
           centerTitle: true,
           elevation: 0,
           actions: [
+            const LocaleMenu(),
             IconButton(
                 onPressed: () {
                   MyApp
@@ -69,7 +72,7 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
                     children: [
-                      const Text('Accept friendship?'),
+                      Text(AppLocalizations.of(context)!.accept_friendship),
                       IconButton(
                           onPressed: () {
                             StoreProvider.of<AppState>(context).dispatch(AddFriendAction(
@@ -94,7 +97,7 @@ class ProfilePage extends StatelessWidget {
                 if (userId == currentUserId && userProfileData.data.friendshipRequests.isNotEmpty) ... [
                   ExpansionTile(
                     title: Text(
-                      'Friendship requests: ${userProfileData.data.friendshipRequests.length}',
+                      '${AppLocalizations.of(context)!.friendship_requests}: ${userProfileData.data.friendshipRequests.length}',
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           letterSpacing: 3
@@ -120,21 +123,21 @@ class ProfilePage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            createLabel('Name:'),
+                            createLabel('${AppLocalizations.of(context)!.name}:'),
                             Text(userProfileData.data.name),
                             const SizedBox(height: 10),
                             if (userProfileData.data.dateOfBirth != null) ... [
-                              createLabel('Date of birth:'),
+                              createLabel('${AppLocalizations.of(context)!.date_of_birth}:'),
                               Text(intl.DateFormat.yMd().format(userProfileData.data.dateOfBirth!)),
                               const SizedBox(height: 10),
                             ],
                             if (userProfileData.data.location != null) ... [
-                              createLabel('Location:'),
+                              createLabel('${AppLocalizations.of(context)!.location}:'),
                               Text(userProfileData.data.location!),
                               const SizedBox(height: 10),
                             ],
                             if (userProfileData.data.phoneNumber != null) ... [
-                              createLabel('Phone:'),
+                              createLabel('${AppLocalizations.of(context)!.phone}:'),
                               Text(userProfileData.data.phoneNumber!),
                             ]
                           ],
@@ -178,7 +181,7 @@ class ProfilePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text('Posts:', style: TextStyle(fontSize: 20)),
+                    Text('${AppLocalizations.of(context)!.posts}:', style: const TextStyle(fontSize: 20)),
                     if(userId == currentUserId)
                       IconButton(
                           onPressed: () {

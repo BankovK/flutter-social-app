@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter_app/models/NewsPost.dart';
+import 'package:flutter_app/navpanel/localeMenu.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
-import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../main.dart';
 
 class PostForm extends StatefulWidget {
@@ -43,6 +43,7 @@ class _PostFormState extends State<PostForm> {
                 centerTitle: true,
                 elevation: 0,
                 actions: [
+                  const LocaleMenu(),
                   IconButton(
                       onPressed: () {
                         MyApp
@@ -75,13 +76,13 @@ class _PostFormState extends State<PostForm> {
                         onPressed: () {
                           if (_controller.document.toPlainText().isNotEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Processing Data')),
+                              SnackBar(content: Text(AppLocalizations.of(context)!.processing_data)),
                             );
                             callback(jsonEncode(_controller.document.toDelta().toJson()));
                             Navigator.pop(context);
                           }
                         },
-                        child: const Text('Submit')
+                        child: Text(AppLocalizations.of(context)!.submit)
                     ),
                   ],
                 ),

@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegistrationForm extends StatefulWidget {
   final Function(bool loggedIn) onLoginCallback;
@@ -46,7 +47,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Center(child: Text('Register', style: TextStyle(fontSize: 20))),
+                  Center(child: Text(AppLocalizations.of(context)!.register, style: const TextStyle(fontSize: 20))),
                   const SizedBox(height: 20,),
                   TextFormField(
                     onSaved: (String? value) {
@@ -54,45 +55,47 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return AppLocalizations.of(context)!.please_enter_some_text;
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Name',
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.name,
                     ),
                   ),
                   const SizedBox(height: 20,),
                   TextFormField(
+                    obscureText: true,
                     onSaved: (String? value) {
                       password = value;
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return AppLocalizations.of(context)!.please_enter_some_text;
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.password,
                     ),
                   ),
                   const SizedBox(height: 20,),
                   TextFormField(
+                    obscureText: true,
                     onSaved: (String? value) {
                       passwordCheck = value;
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return AppLocalizations.of(context)!.please_enter_some_text;
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password again',
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.password_again,
                     ),
                   ),
                   const SizedBox(height: 20,),
@@ -100,7 +103,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
+                          SnackBar(content: Text(AppLocalizations.of(context)!.processing_data)),
                         );
                         _formKey.currentState!.save();
                         List<UserProfile> users = StoreProvider.of<AppState>(context).state.users;
@@ -109,14 +112,14 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         if (user != null) {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Username taken!'), backgroundColor: Colors.red)
+                              SnackBar(content: Text(AppLocalizations.of(context)!.username_taken), backgroundColor: Colors.red)
                           );
                           return;
                         }
                         if (password != passwordCheck) {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Passwords do not match!'), backgroundColor: Colors.red)
+                              SnackBar(content: Text(AppLocalizations.of(context)!.passwords_do_not_match), backgroundColor: Colors.red)
                           );
                           return;
                         }
@@ -134,7 +137,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         widget.onLoginCallback.call(true);
                       }
                     },
-                    child: const Text('Register'),
+                    child: Text(AppLocalizations.of(context)!.register),
                   ),
                 ],
               ),

@@ -2,12 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/UserProfile.dart';
+import 'package:flutter_app/navpanel/localeMenu.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/navpanel/notificationIcon.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileList extends StatefulWidget {
   const ProfileList({Key? key}) : super(key: key);
@@ -28,6 +30,7 @@ class _ProfileListState extends State<ProfileList> {
           centerTitle: true,
           elevation: 0,
           actions: [
+            const LocaleMenu(),
             const NotificationIcon(),
             IconButton(
                 onPressed: () {
@@ -57,18 +60,18 @@ class _ProfileListState extends State<ProfileList> {
                       searchText = value;
                     });
                   },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Search',
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.search,
                   ),
                 ),
-                const TabBar(
-                  labelStyle: TextStyle(color: Colors.black),
+                TabBar(
+                  labelStyle: const TextStyle(color: Colors.black),
                   indicatorColor: Colors.black,
                   labelColor: Colors.black,
                   tabs: [
-                    Tab(text: 'Friends'),
-                    Tab(text: 'All'),
+                    Tab(text: AppLocalizations.of(context)!.friends),
+                    Tab(text: AppLocalizations.of(context)!.all),
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -150,7 +153,7 @@ class _ProfileListState extends State<ProfileList> {
                                               onPressed: () {
                                                 profileInteract.requestFriendshipCallback(profileInteract.list[index].userId);
                                               },
-                                              child: const Text('Request friendship'),
+                                              child: Text(AppLocalizations.of(context)!.request_friendship),
                                             )
                                         ],
                                       ),

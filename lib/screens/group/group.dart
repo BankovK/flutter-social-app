@@ -1,15 +1,16 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/Group.dart';
 import 'package:flutter_app/models/NewsPost.dart';
 import 'package:flutter_app/models/UserProfile.dart';
+import 'package:flutter_app/navpanel/localeMenu.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_app/screens/post/postForm.dart';
 import 'package:flutter_app/screens/post/postItem.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../redux/actions.dart';
 
@@ -34,6 +35,7 @@ class _GroupPageState extends State<GroupPage> {
         centerTitle: true,
         elevation: 0,
         actions: [
+          const LocaleMenu(),
           IconButton(
               onPressed: () {
                 MyApp
@@ -52,7 +54,7 @@ class _GroupPageState extends State<GroupPage> {
       body: Column(
         children: [
           ExpansionTile(
-            title: Text('${members.length} Members'),
+            title: Text('${members.length} ${AppLocalizations.of(context)!.members}'),
             children: <Widget>[
               ...members.map((UserProfile profile) {
                 return ListTile(
@@ -77,7 +79,7 @@ class _GroupPageState extends State<GroupPage> {
                                 );
                               });
                             },
-                            child: const Text('Make admin'),
+                            child: Text(AppLocalizations.of(context)!.make_admin),
                           ),
                         if (!group.banned.contains(profile.userId)) ... [
                           TextButton(
@@ -91,7 +93,7 @@ class _GroupPageState extends State<GroupPage> {
                                 );
                               });
                             },
-                            child: const Text('Ban'),
+                            child: Text(AppLocalizations.of(context)!.ban),
                           )
                         ]
                       ]
@@ -111,7 +113,7 @@ class _GroupPageState extends State<GroupPage> {
                     MaterialPageRoute(builder: (context) => PostForm(groupId: widget.groupId))
                 );
               },
-              child: const Text('Add post')
+              child: Text(AppLocalizations.of(context)!.add_post)
           ),
           Flexible(
             child: StoreConnector<AppState, List<NewsPost>>(

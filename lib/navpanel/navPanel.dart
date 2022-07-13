@@ -4,6 +4,7 @@ import 'package:flutter_app/navpanel/navItem.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../main.dart';
 
@@ -27,27 +28,27 @@ class NavPanel extends StatelessWidget {
           builder: (context, data) {
               return Column(children: [
                   NavItem(
-                      title: 'My Page',
+                      title: AppLocalizations.of(context)!.my_page,
                       icon: Icons.home_rounded,
                       link: ProfilePageRoute(userId: MyApp.of(context).authService.userId),
                       mark: data.friendshipRequests.length
                   ),
-                  const NavItem(
-                      title: 'News',
+                  NavItem(
+                      title: AppLocalizations.of(context)!.news,
                       icon: Icons.newspaper,
-                      link: NewsListRoute(),
+                      link: const NewsListRoute(),
                       mark: 0
                   ),
-                  const NavItem(
-                      title: 'Profiles',
+                  NavItem(
+                      title: AppLocalizations.of(context)!.profiles,
                       icon: Icons.emoji_people,
-                      link: ProfileListRoute(),
+                      link: const ProfileListRoute(),
                       mark: 0
                   ),
-                  const NavItem(
-                      title: 'Groups',
+                  NavItem(
+                      title: AppLocalizations.of(context)!.groups,
                       icon: Icons.group,
-                      link: GroupsListRoute(),
+                      link: const GroupsListRoute(),
                       mark: 0
                   )
               ]);

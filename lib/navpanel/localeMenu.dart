@@ -1,14 +1,11 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/UserProfile.dart';
 import 'package:flutter_app/redux/reducers.dart';
-import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class NotificationIcon extends StatelessWidget {
-  const NotificationIcon({Key? key}) : super(key: key);
+class LocaleMenu extends StatelessWidget {
+  const LocaleMenu({Key? key}) : super(key: key);
 
   Widget renderNotificationIcon(friendshipRequests) {
     return Stack(
@@ -43,15 +40,13 @@ class NotificationIcon extends StatelessWidget {
           converter: (store) => store.state.users.firstWhere((user) => user.userId == MyApp.of(context).authService.userId),
           builder: (context, list) {
               return PopupMenuButton(
-                icon: renderNotificationIcon(list.friendshipRequests),
-                onSelected: (e) => {context.router.push(ProfilePageRoute(userId: e as String))},
+                icon: const Icon(Icons.translate),
+                onSelected: (e) => { MyApp.of(context).setLocale(Locale.fromSubtags(languageCode: e as String)) },
                 itemBuilder: (BuildContext context) {
-                    return list.friendshipRequests.map((e) =>
+                    return ['en', 'ru'].map((e) =>
                         PopupMenuItem(
                             value: e,
-                            child: Text(
-                                '${StoreProvider.of<AppState>(context).state.users.firstWhere((element) => element.userId == e).name} ${AppLocalizations.of(context)!.wants_to_be_your_friend}'
-                            )
+                            child: Text(e)
                         )
                     ).toList();
                 }

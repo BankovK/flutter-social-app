@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/NewsPost.dart';
+import 'package:flutter_app/navpanel/localeMenu.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/navpanel/notificationIcon.dart';
 import 'package:flutter_app/redux/reducers.dart';
@@ -18,6 +19,7 @@ class NewsList extends StatelessWidget {
         centerTitle: true,
         elevation: 0,
         actions: [
+          const LocaleMenu(),
           const NotificationIcon(),
           IconButton(
               onPressed: () {

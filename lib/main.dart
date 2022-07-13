@@ -7,7 +7,8 @@ import 'package:flutter_app/utils/auth_service.dart';
 import 'package:flutter_app/utils/route_guard.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   final store = Store<AppState>(
@@ -44,14 +45,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('en', '');
   final authService = AuthService();
   late final _appRouter = AppRouter(routeGuard: RouteGuard(authService));
+
+  void setLocale(Locale value) {
+    setState(() {
+      _locale = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: widget.store,
       child: MaterialApp.router(
+          locale: _locale,
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en', ''), // English
+            Locale('ru', ''), // Russian
+          ],
           routeInformationParser: _appRouter.defaultRouteParser(),
           routerDelegate: _appRouter.delegate()
       ),

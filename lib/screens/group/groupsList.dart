@@ -2,11 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/Group.dart';
+import 'package:flutter_app/navpanel/localeMenu.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/navpanel/notificationIcon.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../routes/router.gr.dart';
 
@@ -28,6 +30,7 @@ class _GroupsListState extends State<GroupsList> {
           centerTitle: true,
           elevation: 0,
           actions: [
+            const LocaleMenu(),
             const NotificationIcon(),
             IconButton(
                 onPressed: () {
@@ -57,18 +60,18 @@ class _GroupsListState extends State<GroupsList> {
                       searchText = value;
                     });
                   },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Search',
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.search,
                   ),
                 ),
-                const TabBar(
-                  labelStyle: TextStyle(color: Colors.black),
+                TabBar(
+                  labelStyle: const TextStyle(color: Colors.black),
                   indicatorColor: Colors.black,
                   labelColor: Colors.black,
                   tabs: [
-                    Tab(text: 'My Groups'),
-                    Tab(text: 'All Groups'),
+                    Tab(text: AppLocalizations.of(context)!.my_groups),
+                    Tab(text: AppLocalizations.of(context)!.all),
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -98,7 +101,7 @@ class _GroupsListState extends State<GroupsList> {
                                             context.router.push(GroupPageRoute(groupId: list[index].groupId));
                                           },
                                         ),
-                                        subtitle: Text('${list[index].members.length} members'),
+                                        subtitle: Text('${list[index].members.length} ${AppLocalizations.of(context)!.members}'),
                                         leading: const CircleAvatar(
                                           backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
                                         ),
@@ -143,12 +146,12 @@ class _GroupsListState extends State<GroupsList> {
                                                   onPressed: () {
                                                     groupInteract.joinCallback(groupInteract.list[index].groupId);
                                                   },
-                                                  child: const Text('Join'),
+                                                  child: Text(AppLocalizations.of(context)!.join),
                                                 )
-                                              : const Text('Banned', style: TextStyle(color: Colors.red),)
+                                              : Text(AppLocalizations.of(context)!.banned, style: const TextStyle(color: Colors.red),)
                                           ],
                                         ),
-                                        subtitle: Text('${groupInteract.list[index].members.length} members'),
+                                        subtitle: Text('${groupInteract.list[index].members.length} ${AppLocalizations.of(context)!.members}'),
                                         leading: const CircleAvatar(
                                           backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
                                         ),

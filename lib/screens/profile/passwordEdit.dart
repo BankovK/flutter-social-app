@@ -3,6 +3,7 @@ import 'package:flutter_app/models/UserProfile.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PasswordEditForm extends StatefulWidget {
   final String userId;
@@ -38,7 +39,7 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Center(child: Text('Change password', style: TextStyle(fontSize: 20))),
+                  Center(child: Text(AppLocalizations.of(context)!.change_password, style: const TextStyle(fontSize: 20))),
                   const SizedBox(height: 20,),
                   TextFormField(
                     onSaved: (String? value) {
@@ -46,13 +47,13 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return AppLocalizations.of(context)!.please_enter_some_text;
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Old password',
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.old_password,
                     ),
                   ),
                   const SizedBox(height: 20,),
@@ -63,13 +64,13 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return AppLocalizations.of(context)!.please_enter_some_text;
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'New password',
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.new_password,
                     ),
                   ),
                   const SizedBox(height: 20,),
@@ -80,13 +81,13 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return AppLocalizations.of(context)!.please_enter_some_text;
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'New password again',
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.new_password_again,
                     ),
                   ),
                   const SizedBox(height: 20,),
@@ -94,7 +95,7 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
+                          SnackBar(content: Text(AppLocalizations.of(context)!.processing_data)),
                         );
                         _formKey.currentState!.save();
                         UserProfile user = StoreProvider.of<AppState>(context).state.users.firstWhere((user) => user.userId == widget.userId);
@@ -102,14 +103,14 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                         if (user.password != oldPassword) {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Old password incorrect!'), backgroundColor: Colors.red)
+                              SnackBar(content: Text(AppLocalizations.of(context)!.old_password_incorrect), backgroundColor: Colors.red)
                           );
                           return;
                         }
                         if (password != passwordCheck) {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Passwords do not match!'), backgroundColor: Colors.red)
+                              SnackBar(content: Text(AppLocalizations.of(context)!.passwords_do_not_match), backgroundColor: Colors.red)
                           );
                           return;
                         }
@@ -119,7 +120,7 @@ class _PasswordEditFormState extends State<PasswordEditForm> {
                         Navigator.pop(context);
                       }
                     },
-                    child: const Text('Submit'),
+                    child: Text(AppLocalizations.of(context)!.submit),
                   ),
                 ],
               ),

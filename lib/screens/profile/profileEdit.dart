@@ -2,11 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/UserProfile.dart';
+import 'package:flutter_app/navpanel/localeMenu.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/screens/profile/passwordEdit.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../routes/router.gr.dart';
 
@@ -49,6 +51,7 @@ class _ProfileEditState extends State<ProfileEdit> {
           centerTitle: true,
           elevation: 0,
           actions: [
+            const LocaleMenu(),
             IconButton(
                 onPressed: () {
                   MyApp
@@ -89,13 +92,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return AppLocalizations.of(context)!.please_enter_some_text;
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Name',
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: AppLocalizations.of(context)!.name,
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -103,9 +106,9 @@ class _ProfileEditState extends State<ProfileEdit> {
                             controller: _dateController,
                             onTap: () => _selectDate(context),
                             readOnly: true,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Date of birth (optional)',
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: '${AppLocalizations.of(context)!.date_of_birth} (${AppLocalizations.of(context)!.optional})',
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -114,9 +117,9 @@ class _ProfileEditState extends State<ProfileEdit> {
                             onSaved: (String? value) {
                               widget.profile.location = value!;
                             },
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Location (optional)',
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: '${AppLocalizations.of(context)!.location} (${AppLocalizations.of(context)!.optional})',
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -125,9 +128,9 @@ class _ProfileEditState extends State<ProfileEdit> {
                             onSaved: (String? value) {
                               widget.profile.phoneNumber = value!;
                             },
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Phone (optional)',
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: '${AppLocalizations.of(context)!.phone} (${AppLocalizations.of(context)!.optional})',
                             ),
                           ),
                         ],
@@ -140,7 +143,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               MaterialPageRoute(builder: (context) => PasswordEditForm(userId: widget.profile.userId))
                           );
                         },
-                        child: const Text('Change password')
+                        child: Text(AppLocalizations.of(context)!.change_password)
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -149,7 +152,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Processing Data')),
+                                  SnackBar(content: Text(AppLocalizations.of(context)!.processing_data)),
                                 );
                                 _formKey.currentState!.save();
                                 widget.profile.location = widget.profile.location != ''
