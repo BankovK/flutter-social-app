@@ -2,9 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/Group.dart';
-import 'package:flutter_app/navpanel/localeMenu.dart';
+import 'package:flutter_app/navpanel/header.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
-import 'package:flutter_app/navpanel/notificationIcon.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -25,33 +24,12 @@ class _GroupsListState extends State<GroupsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue[900],
-          centerTitle: true,
-          elevation: 0,
-          actions: [
-            const LocaleMenu(),
-            const NotificationIcon(),
-            IconButton(
-                onPressed: () {
-                  MyApp
-                      .of(context)
-                      .authService
-                      .authenticated = false;
-                  MyApp
-                      .of(context)
-                      .authService
-                      .userId = '';
-                },
-                icon: const Icon(Icons.exit_to_app)
-            )
-          ],
-        ),
+        appBar: const Header(),
         drawer: const NavPanel(),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: DefaultTabController(
-            length: 2,
+            length: MyApp.of(context).authService.authenticated ? 2 : 1,
             child: Column(
               children: [
                 TextFormField(
@@ -65,53 +43,55 @@ class _GroupsListState extends State<GroupsList> {
                     labelText: AppLocalizations.of(context)!.search,
                   ),
                 ),
-                TabBar(
-                  labelStyle: const TextStyle(color: Colors.black),
-                  indicatorColor: Colors.black,
-                  labelColor: Colors.black,
-                  tabs: [
-                    Tab(text: AppLocalizations.of(context)!.my_groups),
-                    Tab(text: AppLocalizations.of(context)!.all),
-                  ],
-                ),
+                if (MyApp.of(context).authService.authenticated)
+                  TabBar(
+                    labelStyle: const TextStyle(color: Colors.black),
+                    indicatorColor: Colors.black,
+                    labelColor: Colors.black,
+                    tabs: [
+                      Tab(text: AppLocalizations.of(context)!.my_groups),
+                      Tab(text: AppLocalizations.of(context)!.all),
+                    ],
+                  ),
                 const SizedBox(height: 30),
                 Flexible(
                   child: TabBarView(
                     children: [
-                      StoreConnector<AppState, List<Group>>(
-                          converter: (store) => searchText != ''
-                              ? store.state.groups.where((element) =>
-                                  element.members.contains(MyApp.of(context).authService.userId)
-                                  && element.name.toLowerCase().contains(searchText!.toLowerCase())
-                                ).toList()
-                              : store.state.groups.where((element) =>
-                                  element.members.contains(MyApp.of(context).authService.userId)
-                                ).toList(),
-                          builder: (context, list) {
-                            return ListView.builder(
-                              itemCount: list.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
-                                    child: Card(
-                                      child: ListTile(
-                                        title: InkWell(
-                                          child: Text(list[index].name),
-                                          onTap: () {
-                                            context.router.push(GroupPageRoute(groupId: list[index].groupId));
-                                          },
+                      if (MyApp.of(context).authService.authenticated)
+                        StoreConnector<AppState, List<Group>>(
+                            converter: (store) => searchText != ''
+                                ? store.state.groups.where((element) =>
+                                    element.members.contains(MyApp.of(context).authService.userId)
+                                    && element.name.toLowerCase().contains(searchText!.toLowerCase())
+                                  ).toList()
+                                : store.state.groups.where((element) =>
+                                    element.members.contains(MyApp.of(context).authService.userId)
+                                  ).toList(),
+                            builder: (context, list) {
+                              return ListView.builder(
+                                itemCount: list.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
+                                      child: Card(
+                                        child: ListTile(
+                                          title: InkWell(
+                                            child: Text(list[index].name),
+                                            onTap: () {
+                                              context.router.push(GroupPageRoute(groupId: list[index].groupId));
+                                            },
+                                          ),
+                                          subtitle: Text('${list[index].members.length} ${AppLocalizations.of(context)!.members}'),
+                                          leading: const CircleAvatar(
+                                            backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
+                                          ),
                                         ),
-                                        subtitle: Text('${list[index].members.length} ${AppLocalizations.of(context)!.members}'),
-                                        leading: const CircleAvatar(
-                                          backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
-                                        ),
-                                      ),
-                                    )
-                                );
-                              },
-                            );
-                          }
-                      ),
+                                      )
+                                  );
+                                },
+                              );
+                            }
+                        ),
                       StoreConnector<AppState, GroupInteract>(
                           converter: (store) => GroupInteract(
                               list: searchText != ''
@@ -140,7 +120,10 @@ class _GroupsListState extends State<GroupsList> {
                                                 context.router.push(GroupPageRoute(groupId: groupInteract.list[index].groupId));
                                               },
                                             ),
-                                            if (!groupInteract.list[index].members.contains(MyApp.of(context).authService.userId))
+                                            if (
+                                              MyApp.of(context).authService.authenticated
+                                              && !groupInteract.list[index].members.contains(MyApp.of(context).authService.userId)
+                                            )
                                               !groupInteract.list[index].banned.contains(MyApp.of(context).authService.userId)
                                               ? TextButton(
                                                   onPressed: () {

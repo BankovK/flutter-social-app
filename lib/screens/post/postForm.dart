@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_app/models/NewsPost.dart';
-import 'package:flutter_app/navpanel/localeMenu.dart';
+import 'package:flutter_app/navpanel/header.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -38,27 +38,7 @@ class _PostFormState extends State<PostForm> {
                 ));
           }, builder: (context, callback) {
             return Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.blue[900],
-                centerTitle: true,
-                elevation: 0,
-                actions: [
-                  const LocaleMenu(),
-                  IconButton(
-                      onPressed: () {
-                        MyApp
-                            .of(context)
-                            .authService
-                            .authenticated = false;
-                        MyApp
-                            .of(context)
-                            .authService
-                            .userId = '';
-                      },
-                      icon: const Icon(Icons.exit_to_app)
-                  )
-                ],
-              ),
+              appBar: const Header(),
               body: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(

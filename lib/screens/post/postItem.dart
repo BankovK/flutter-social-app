@@ -6,6 +6,7 @@ import 'package:flutter_app/models/NewsPost.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
+import 'package:flutter_app/screens/loginForm.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -17,18 +18,25 @@ class PostItem extends StatelessWidget {
   const PostItem({Key? key, required this.item}) : super(key: key);
 
   Widget createLikeBtn(context) {
-    return !item.likedBy.contains(MyApp.of(context).authService.userId)
+    return !item.likedBy.contains(MyApp.of(context).authService.userId) || !MyApp.of(context).authService.authenticated
         ? IconButton(
             onPressed: () {
-              StoreProvider.of<AppState>(context).dispatch(
-                  LikePostAction(
-                    postId: item.postId,
-                    userId: MyApp
-                        .of(context)
-                        .authService
-                        .userId,
-                  )
-              );
+              if (MyApp.of(context).authService.authenticated) {
+                StoreProvider.of<AppState>(context).dispatch(
+                    LikePostAction(
+                      postId: item.postId,
+                      userId: MyApp
+                          .of(context)
+                          .authService
+                          .userId,
+                    )
+                );
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginForm(onLoginCallback: (bool loggedIn) => {if (loggedIn) {Navigator.pop(context)}},))
+                );
+              }
             },
             icon: const Icon(Icons.heart_broken_outlined)
           )

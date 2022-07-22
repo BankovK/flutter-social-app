@@ -4,7 +4,7 @@ import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/Group.dart';
 import 'package:flutter_app/models/NewsPost.dart';
 import 'package:flutter_app/models/UserProfile.dart';
-import 'package:flutter_app/navpanel/localeMenu.dart';
+import 'package:flutter_app/navpanel/header.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_app/screens/post/postForm.dart';
@@ -30,27 +30,7 @@ class _GroupPageState extends State<GroupPage> {
     List<UserProfile> members = StoreProvider.of<AppState>(context).state.users
         .where((element) => group.members.contains(element.userId)).toList();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue[900],
-        centerTitle: true,
-        elevation: 0,
-        actions: [
-          const LocaleMenu(),
-          IconButton(
-              onPressed: () {
-                MyApp
-                    .of(context)
-                    .authService
-                    .authenticated = false;
-                MyApp
-                    .of(context)
-                    .authService
-                    .userId = '';
-              },
-              icon: const Icon(Icons.exit_to_app)
-          )
-        ],
-      ),
+      appBar: const Header(),
       body: Column(
         children: [
           ExpansionTile(

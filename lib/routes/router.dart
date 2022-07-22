@@ -15,19 +15,19 @@ import 'package:flutter_app/utils/route_guard.dart';
       name: 'ProfileListRoute',
       path: '/profiles',
       initial: true,
-      guards: [RouteGuard],
+      // guards: [RouteGuard],
     ),
     AutoRoute(
       page: ProfilePage,
       name: 'ProfilePageRoute',
       path: '/details/:id',
-      guards: [RouteGuard],
+      // guards: [RouteGuard],
     ),
     AutoRoute(
       page: NewsList,
       name: 'NewsListRoute',
       path: '/news-list',
-      guards: [RouteGuard],
+      // guards: [RouteGuard],
     ),
     AutoRoute(
       page: PostForm,
@@ -39,13 +39,13 @@ import 'package:flutter_app/utils/route_guard.dart';
       page: GroupsList,
       name: 'GroupsListRoute',
       path: '/groups-list',
-      guards: [RouteGuard],
+      // guards: [RouteGuard],
     ),
     AutoRoute(
       page: GroupPage,
       name: 'GroupPageRoute',
       path: '/group/:id',
-      guards: [RouteGuard],
+      // guards: [RouteGuard],
     ),
     AutoRoute(page: LoginForm, name: 'LoginRoute', path: '/login')
   ],

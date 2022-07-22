@@ -50,8 +50,11 @@ class AppRouter extends _i8.RootStackRouter {
           routeData: routeData, child: const _i3.NewsList());
     },
     PostFormRoute.name: (routeData) {
+      final args = routeData.argsAs<PostFormRouteArgs>(
+          orElse: () => const PostFormRouteArgs());
       return _i8.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i4.PostForm());
+          routeData: routeData,
+          child: _i4.PostForm(key: args.key, groupId: args.groupId));
     },
     GroupsListRoute.name: (routeData) {
       return _i8.MaterialPageX<dynamic>(
@@ -79,18 +82,13 @@ class AppRouter extends _i8.RootStackRouter {
   List<_i8.RouteConfig> get routes => [
         _i8.RouteConfig('/#redirect',
             path: '/', redirectTo: '/profiles', fullMatch: true),
-        _i8.RouteConfig(ProfileListRoute.name,
-            path: '/profiles', guards: [routeGuard]),
-        _i8.RouteConfig(ProfilePageRoute.name,
-            path: '/details/:id', guards: [routeGuard]),
-        _i8.RouteConfig(NewsListRoute.name,
-            path: '/news-list', guards: [routeGuard]),
+        _i8.RouteConfig(ProfileListRoute.name, path: '/profiles'),
+        _i8.RouteConfig(ProfilePageRoute.name, path: '/details/:id'),
+        _i8.RouteConfig(NewsListRoute.name, path: '/news-list'),
         _i8.RouteConfig(PostFormRoute.name,
             path: '/create-post', guards: [routeGuard]),
-        _i8.RouteConfig(GroupsListRoute.name,
-            path: '/groups-list', guards: [routeGuard]),
-        _i8.RouteConfig(GroupPageRoute.name,
-            path: '/group/:id', guards: [routeGuard]),
+        _i8.RouteConfig(GroupsListRoute.name, path: '/groups-list'),
+        _i8.RouteConfig(GroupPageRoute.name, path: '/group/:id'),
         _i8.RouteConfig(LoginRoute.name, path: '/login')
       ];
 }
@@ -138,10 +136,26 @@ class NewsListRoute extends _i8.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.PostForm]
-class PostFormRoute extends _i8.PageRouteInfo<void> {
-  const PostFormRoute() : super(PostFormRoute.name, path: '/create-post');
+class PostFormRoute extends _i8.PageRouteInfo<PostFormRouteArgs> {
+  PostFormRoute({_i9.Key? key, String? groupId})
+      : super(PostFormRoute.name,
+            path: '/create-post',
+            args: PostFormRouteArgs(key: key, groupId: groupId));
 
   static const String name = 'PostFormRoute';
+}
+
+class PostFormRouteArgs {
+  const PostFormRouteArgs({this.key, this.groupId});
+
+  final _i9.Key? key;
+
+  final String? groupId;
+
+  @override
+  String toString() {
+    return 'PostFormRouteArgs{key: $key, groupId: $groupId}';
+  }
 }
 
 /// generated route for

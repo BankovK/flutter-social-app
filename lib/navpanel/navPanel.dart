@@ -23,37 +23,37 @@ class NavPanel extends StatelessWidget {
             BoxShadow(color: Colors.white12, blurRadius: 16)
           ],
         ),
-        child: StoreConnector<AppState, UserProfile>(
-          converter: (store) => store.state.users.firstWhere((user) => user.userId == MyApp.of(context).authService.userId),
-          builder: (context, data) {
-              return Column(children: [
-                  NavItem(
+        child: Column(children: [
+            if (MyApp.of(context).authService.authenticated)
+                  StoreConnector<AppState, UserProfile>(
+                  converter: (store) => store.state.users.firstWhere((user) => user.userId == MyApp.of(context).authService.userId),
+                  builder: (context, data) {
+                    return NavItem(
                       title: AppLocalizations.of(context)!.my_page,
                       icon: Icons.home_rounded,
                       link: ProfilePageRoute(userId: MyApp.of(context).authService.userId),
                       mark: data.friendshipRequests.length
-                  ),
-                  NavItem(
-                      title: AppLocalizations.of(context)!.news,
-                      icon: Icons.newspaper,
-                      link: const NewsListRoute(),
-                      mark: 0
-                  ),
-                  NavItem(
-                      title: AppLocalizations.of(context)!.profiles,
-                      icon: Icons.emoji_people,
-                      link: const ProfileListRoute(),
-                      mark: 0
-                  ),
-                  NavItem(
-                      title: AppLocalizations.of(context)!.groups,
-                      icon: Icons.group,
-                      link: const GroupsListRoute(),
-                      mark: 0
-                  )
-              ]);
-          }
-        )
+                    );
+                  }),
+            NavItem(
+                title: AppLocalizations.of(context)!.news,
+                icon: Icons.newspaper,
+                link: const NewsListRoute(),
+                mark: 0
+            ),
+            NavItem(
+                title: AppLocalizations.of(context)!.profiles,
+                icon: Icons.emoji_people,
+                link: const ProfileListRoute(),
+                mark: 0
+            ),
+            NavItem(
+                title: AppLocalizations.of(context)!.groups,
+                icon: Icons.group,
+                link: const GroupsListRoute(),
+                mark: 0
+            )
+        ])
       ),
     );
   }

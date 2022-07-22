@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/Group.dart';
 import 'package:flutter_app/models/NewsPost.dart';
-import 'package:flutter_app/navpanel/localeMenu.dart';
+import 'package:flutter_app/navpanel/header.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
@@ -34,36 +34,19 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool authenticated = MyApp.of(context).authService.authenticated;
     String currentUserId = MyApp.of(context).authService.userId;
     List<Group> groups = StoreProvider.of<AppState>(context).state.groups
         .where((element) => element.members.contains(userId)).toList();
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue[900],
-          centerTitle: true,
-          elevation: 0,
-          actions: [
-            const LocaleMenu(),
-            IconButton(
-                onPressed: () {
-                  MyApp
-                      .of(context)
-                      .authService
-                      .authenticated = false;
-                  MyApp
-                      .of(context)
-                      .authService
-                      .userId = '';
-                },
-                icon: const Icon(Icons.exit_to_app)
-            )
-          ],
-        ),
+        appBar: const Header(),
         body: StoreConnector<AppState, UserProfileData>(
           converter: (store) => UserProfileData(
             data: store.state.users.firstWhere((user) => user.userId == userId),
-            isPotentialFriend: store.state.users.firstWhere((user) => user.userId == currentUserId).friendshipRequests.contains(userId)
+            isPotentialFriend: authenticated
+                ? store.state.users.firstWhere((user) => user.userId == currentUserId).friendshipRequests.contains(userId)
+                : false
           ),
           builder: (context, userProfileData) {
             return Column(

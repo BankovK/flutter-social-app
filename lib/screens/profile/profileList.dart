@@ -2,9 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/UserProfile.dart';
-import 'package:flutter_app/navpanel/localeMenu.dart';
+import 'package:flutter_app/navpanel/header.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
-import 'package:flutter_app/navpanel/notificationIcon.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
@@ -25,33 +24,12 @@ class _ProfileListState extends State<ProfileList> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue[900],
-          centerTitle: true,
-          elevation: 0,
-          actions: [
-            const LocaleMenu(),
-            const NotificationIcon(),
-            IconButton(
-                onPressed: () {
-                  MyApp
-                      .of(context)
-                      .authService
-                      .authenticated = false;
-                  MyApp
-                      .of(context)
-                      .authService
-                      .userId = '';
-                },
-                icon: const Icon(Icons.exit_to_app)
-            ),
-          ],
-        ),
+        appBar: const Header(),
         drawer: const NavPanel(),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: DefaultTabController(
-            length: 2,
+            length: MyApp.of(context).authService.authenticated ? 2 : 1,
             child: Column(
               children: [
                 TextFormField(
@@ -65,52 +43,55 @@ class _ProfileListState extends State<ProfileList> {
                     labelText: AppLocalizations.of(context)!.search,
                   ),
                 ),
-                TabBar(
-                  labelStyle: const TextStyle(color: Colors.black),
-                  indicatorColor: Colors.black,
-                  labelColor: Colors.black,
-                  tabs: [
-                    Tab(text: AppLocalizations.of(context)!.friends),
-                    Tab(text: AppLocalizations.of(context)!.all),
-                  ],
-                ),
+                if (MyApp.of(context).authService.authenticated)
+                  TabBar(
+                    labelStyle: const TextStyle(color: Colors.black),
+                    indicatorColor: Colors.black,
+                    labelColor: Colors.black,
+                    tabs: [
+                      Tab(text: AppLocalizations.of(context)!.friends),
+                      Tab(text: AppLocalizations.of(context)!.all),
+                    ],
+                  ),
                 const SizedBox(height: 30),
                 Flexible(
                   child: TabBarView(
                     children: [
-                      StoreConnector<AppState, List<UserProfile>>(
-                        converter: (store) => searchText != ''
-                            ? store.state.users.where((element) =>
-                                element.userId != MyApp.of(context).authService.userId
-                                && element.friends.contains(MyApp.of(context).authService.userId)
-                                && element.name.toLowerCase().contains(searchText!.toLowerCase())
-                              ).toList()
-                            : store.state.users.where((element) =>
-                                element.userId != MyApp.of(context).authService.userId
-                                && element.friends.contains(MyApp.of(context).authService.userId)
-                              ).toList(),
-                        builder: (context, list) {
-                          return ListView.builder(
-                            itemCount: list.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
-                                child: Card(
-                                  child: ListTile(
-                                    onTap: () {
-                                        context.router.push(ProfilePageRoute(userId: list[index].userId));
-                                    },
-                                    title: Text(list[index].name),
-                                    leading: const CircleAvatar(
-                                      backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
+                      if (MyApp.of(context).authService.authenticated) ... [
+                        StoreConnector<AppState, List<UserProfile>>(
+                          converter: (store) => searchText != ''
+                              ? store.state.users.where((element) =>
+                                  element.userId != MyApp.of(context).authService.userId
+                                  && element.friends.contains(MyApp.of(context).authService.userId)
+                                  && element.name.toLowerCase().contains(searchText!.toLowerCase())
+                                ).toList()
+                              : store.state.users.where((element) =>
+                                  element.userId != MyApp.of(context).authService.userId
+                                  && element.friends.contains(MyApp.of(context).authService.userId)
+                                ).toList(),
+                          builder: (context, list) {
+                            return ListView.builder(
+                              itemCount: list.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
+                                  child: Card(
+                                    child: ListTile(
+                                      onTap: () {
+                                          context.router.push(ProfilePageRoute(userId: list[index].userId));
+                                      },
+                                      title: Text(list[index].name),
+                                      leading: const CircleAvatar(
+                                        backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        }
-                      ),
+                                );
+                              },
+                            );
+                          }
+                        ),
+                      ],
                       StoreConnector<AppState, ProfileInteract>(
                           converter: (store) =>
                           ProfileInteract(
@@ -146,7 +127,8 @@ class _ProfileListState extends State<ProfileList> {
                                             },
                                           ),
                                           if (
-                                            !profileInteract.list[index].friends.contains(MyApp.of(context).authService.userId)
+                                            MyApp.of(context).authService.authenticated
+                                            && !profileInteract.list[index].friends.contains(MyApp.of(context).authService.userId)
                                             && !profileInteract.list[index].friendshipRequests.contains(MyApp.of(context).authService.userId)
                                           )
                                             TextButton(
