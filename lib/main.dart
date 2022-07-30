@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/Group.dart';
+import 'package:flutter_app/models/ThemeModel.dart';
 import 'package:flutter_app/models/UserProfile.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_app/routes/router.gr.dart';
 import 'package:flutter_app/utils/auth_service.dart';
 import 'package:flutter_app/utils/route_guard.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:provider/provider.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -57,22 +59,30 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreProvider<AppState>(
-      store: widget.store,
-      child: MaterialApp.router(
-          locale: _locale,
-          localizationsDelegates: [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''), // English
-            Locale('ru', ''), // Russian
-          ],
-          routeInformationParser: _appRouter.defaultRouteParser(),
-          routerDelegate: _appRouter.delegate()
+    return ChangeNotifierProvider(
+      create: (_) => ThemeModel(),
+      child: Consumer<ThemeModel>(
+        builder: (context, ThemeModel themeNotifier, child) {
+          return StoreProvider<AppState>(
+            store: widget.store,
+            child: MaterialApp.router(
+                theme: themeNotifier.isDark ? ThemeData.dark() : ThemeData.light(),
+                locale: _locale,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('en', ''), // English
+                  Locale('ru', ''), // Russian
+                ],
+                routeInformationParser: _appRouter.defaultRouteParser(),
+                routerDelegate: _appRouter.delegate()
+            ),
+          );
+        }
       ),
     );
   }

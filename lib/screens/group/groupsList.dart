@@ -2,12 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/Group.dart';
+import 'package:flutter_app/models/ThemeModel.dart';
 import 'package:flutter_app/navpanel/header.dart';
 import 'package:flutter_app/navpanel/navPanel.dart';
 import 'package:flutter_app/redux/actions.dart';
 import 'package:flutter_app/redux/reducers.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 import '../../routes/router.gr.dart';
 
@@ -44,15 +46,18 @@ class _GroupsListState extends State<GroupsList> {
                   ),
                 ),
                 if (MyApp.of(context).authService.authenticated)
-                  TabBar(
-                    labelStyle: const TextStyle(color: Colors.black),
-                    indicatorColor: Colors.black,
-                    labelColor: Colors.black,
-                    tabs: [
-                      Tab(text: AppLocalizations.of(context)!.my_groups),
-                      Tab(text: AppLocalizations.of(context)!.all),
-                    ],
-                  ),
+                  Consumer<ThemeModel>(
+                    builder: (context, ThemeModel themeNotifier, child) {
+                      return TabBar(
+                        labelStyle: const TextStyle(color: Colors.black),
+                        indicatorColor: themeNotifier.isDark ? Colors.white : Colors.black,
+                        labelColor: themeNotifier.isDark ? Colors.white : Colors.black,
+                        tabs: [
+                          Tab(text: AppLocalizations.of(context)!.my_groups),
+                          Tab(text: AppLocalizations.of(context)!.all),
+                        ],
+                      );
+                    }),
                 const SizedBox(height: 30),
                 Flexible(
                   child: TabBarView(
